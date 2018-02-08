@@ -19,6 +19,16 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Insert html into div -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+               $('#smallDiv').load("temp-div.html");
+            });
+        </script>
+
 </head>
   <body >
     <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -199,9 +209,11 @@
                     <li class="active"> <a  id='the-track-list-tab' href="#the-track-list" 
                             data-toggle="tab">The Track list</a> </li>
                     <li><a href="#the-plots" data-toggle="tab">The Plots</a> </li>
+                    <li><a href="#the-3d-plots" data-toggle="tab">The 3D Plots</a> </li>
                     <li><a href="#staging" id='staging-tab'
                     data-toggle="tab">Staging Playlist (<span
                     class='nstaging-tracks'>0</span>)</a> </li>
+                    <li><a href="#the-test-plots" data-toggle="tab">The Test Plots</a> </li>
                 </ul>
 
 
@@ -240,6 +252,41 @@
                             </div>
                         </div>
                         <div id="the-plot"></div>
+                    </div>
+
+                    <div class="tab-pane" id="the-3d-plots">
+                        <div class="row" id="plot-controls">
+                            <div class="col-xs-3">
+                                <span for="select-size"> X axis: </span> <br>
+                                <select id='select-3d-xaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <span for="select-size"> Y axis:</span> <br>
+                                <select id='select-3d-yaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <span for="select-size"> Z axis:</span> <br>
+                                <select id='select-3d-zaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-2">
+                                <span for="select-size"> Size: </span> <br>
+                                <select id='select-3d-size' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+                            <div id='plot-buttons' class="col-xs-1">
+                                <!--
+                                <a id="plot-select" title="add selected tracks to staging" 
+                                class="nbtn btn-success">
+                                <span class="glyphicon glyphicon-ok"></span></a>
+                                -->
+                                <a id="3d-plot-clear" title="clear all tracks from the plot"
+                                class="nbtn btn-danger"><span
+                                class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                        </div>
+                        <div id="the-3d-plot"></div>
                     </div>
 
                   <div class="tab-pane" id="staging">
@@ -287,7 +334,47 @@
                           <div id="gthe-staging-table-truncated"> Showing the first 400 matching tracks. </div>
                      </div>
                    </div>
-                </div>
+
+                   <div class="tab-pane" id="the-test-plots">
+                        <div class="row" id="plot-controls">
+                            <div class="col-xs-3">
+                                <span for="select-size"> X axis: </span> <br>
+                                <select id='select-3d-xaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <span for="select-size"> Y axis:</span> <br>
+                                <select id='select-3d-yaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <span for="select-size"> Z axis:</span> <br>
+                                <select id='select-3d-zaxis' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+
+                            <div class="col-xs-2">
+                                <span for="select-size"> Size: </span> <br>
+                                <select id='select-3d-size' class="axis-select nform-control nselectpicker"> </select>
+                            </div>
+                            <div id='plot-buttons' class="col-xs-1">
+                                <!--
+                                <a id="plot-select" title="add selected tracks to staging" 
+                                class="nbtn btn-success">
+                                <span class="glyphicon glyphicon-ok"></span></a>
+                                -->
+                                <a id="3d-plot-clear" title="clear all tracks from the plot"
+                                class="nbtn btn-danger"><span
+                                class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                        </div>
+
+                        <div id="smallDiv"> </div>
+                        <!-- Simple graph -->
+                        <!-- <div id="c33edc9b-0b25-40c2-b202-eb25c01f51b6" style="height: 100%; width: 100%;" class="plotly-graph-div"></div><script type="text/javascript">window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("c33edc9b-0b25-40c2-b202-eb25c01f51b6", [{"y": [4, 3, 2, 1, 3], "x": [1, 2, 3, 4, 5], "type": "scatter"}], {"title": "hello world"}, {"linkText": "Export to plot.ly", "showLink": true})</script> -->
+
+
+                    </div>
+
             </div>
 
               <br>
@@ -332,6 +419,7 @@ var nodeMap = { }
 var genreIndex = 0;
 var sourceIndex = 6;
 var thePlot = null;
+var the3DPlot = null;
 
 var skipGenrePhrases = ['christmas'];
 var audio = $("<audio>");
@@ -708,6 +796,92 @@ function getPlotData(node) {
     return theDataTrace;
 }
 
+function get3DPlotData(node) {
+    var xDataName = $("#select-3d-xaxis").val();
+    var yDataName = $("#select-3d-yaxis").val();
+    var zDataName = $("#select-3d-zaxis").val();
+
+    var theDataTrace = {
+        x:[],
+        y:[],
+        z:[],
+        mode: 'markers',
+        name: node.name,
+        text: [],
+        node:node,
+        marker: {
+            sizemode:'diameter',
+            size:[],
+            sizeref:1,
+            sizemin:2,
+        },
+        type: 'scatter3d',
+        // type: 'mesh3d',
+        // alphahull: 8,
+        // opacity: 0.4
+    };
+    
+    var xGetter = plottableData[xDataName].getter;
+    var yGetter = plottableData[yDataName].getter;
+    var zGetter = plottableData[zDataName].getter;
+
+    var sizes = [];
+    _.each(node.tracks, function(track) {
+        theDataTrace.x.push(xGetter(track));
+        theDataTrace.y.push(yGetter(track));
+        theDataTrace.z.push(zGetter(track));
+        var name = track.details.name + " - " + track.details.artists[0].name;
+        theDataTrace.text.push(name);
+    });
+
+    var nsizes = normalizeSizes(node.tracks);
+    theDataTrace.marker.size = nsizes;
+    return theDataTrace;
+}
+
+function get3DPlotDataMesh(node) {
+    var xDataName = $("#select-3d-xaxis").val();
+    var yDataName = $("#select-3d-yaxis").val();
+    var zDataName = $("#select-3d-zaxis").val();
+
+    var theDataTrace = {
+        x:[],
+        y:[],
+        z:[],
+        mode: 'markers',
+        name: node.name,
+        text: [],
+        node:node,
+        marker: {
+            sizemode:'diameter',
+            size:[],
+            sizeref:1,
+            sizemin:2,
+        },
+        // type: 'scatter3d',
+        type: 'mesh3d',
+        alphahull: 7,
+        opacity: 0.4
+    };
+    
+    var xGetter = plottableData[xDataName].getter;
+    var yGetter = plottableData[yDataName].getter;
+    var zGetter = plottableData[zDataName].getter;
+
+    var sizes = [];
+    _.each(node.tracks, function(track) {
+        theDataTrace.x.push(xGetter(track));
+        theDataTrace.y.push(yGetter(track));
+        theDataTrace.z.push(zGetter(track));
+        var name = track.details.name + " - " + track.details.artists[0].name;
+        theDataTrace.text.push(name);
+    });
+
+    var nsizes = normalizeSizes(node.tracks);
+    theDataTrace.marker.size = nsizes;
+    return theDataTrace;
+}
+
 function normalizeSizes(tracks) {
     var sizeDataName = $("#select-size").val();
     var sizeInfo = plottableData[sizeDataName];
@@ -741,6 +915,8 @@ function plotPlaylist(node) {
         curPlottingNodes[node.name] = node;
         curPlottingNames.push(node.name);
         Plotly.plot(thePlot, [getPlotData(node)], getLayout());
+        Plotly.plot(the3DPlot, [get3DPlotData(node)], get3dLayout());
+        Plotly.plot(the3DPlot, [get3DPlotDataMesh(node)], get3dLayout());
     }
 }
 
@@ -776,6 +952,72 @@ function getLayout() {
     return layout;
 }
 
+function get3dLayout() {
+    var xDataName = $("#select-3d-xaxis").val();
+    var yDataName = $("#select-3d-yaxis").val();
+    var zDataName = $("#select-3d-zaxis").val();
+    var sizeDataName = $("#select-3d-size").val();
+    var xMargin = 300;
+    var yMargin = 200;
+    var yFooter = 20;
+    var minHeight = 300;
+    var minWidth = 600;
+
+    var width =   $(window).width() - xMargin;
+    if (width < minWidth) {
+        width = minWidth;
+    }
+    var height =   $(window).height() - yMargin - yFooter;
+    if (height < minHeight) {
+        height = minHeight;
+    }
+    var layout = {
+        showlegend:true,
+        legend: {
+          orientation: "v",
+          x: 1,
+          y: 0.75,
+        },
+        hovermode:'closest',
+        xaxis: { title: plottableData[xDataName].name },
+        yaxis: { title: plottableData[yDataName].name },
+        zaxis: { title: plottableData[zDataName].name },
+        autosize:true,
+        margin: {
+          l: 0,
+          r: 0,
+          b: 0,
+          t: 0,
+        },
+        width:width,
+        height:height,
+        scene: {
+          xaxis: { 
+            title: xDataName,
+            backgroundcolor: 'rgb(200, 200, 200)',
+            gridcolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            zerolinecolor: 'rgb(255, 255, 255)',
+          },
+          yaxis: { 
+            title: yDataName,
+            backgroundcolor: 'rgb(200, 200,200)',
+            gridcolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            zerolinecolor: 'rgb(255, 255, 255)',
+          },
+          zaxis: { 
+            title: zDataName,
+            backgroundcolor: 'rgb(200, 200,200)',
+            gridcolor: 'rgb(255, 255, 255)',
+            showbackground: true,
+            zerolinecolor: 'rgb(255, 255, 255)',
+          },
+        },
+    };
+    return layout;
+} 
+
 function redrawPlot() {
     var layout = getLayout();
     var plotData = [];
@@ -806,6 +1048,18 @@ function redrawPlot() {
         info("selected " + trackList.length + " tracks");
         $("#add-to-wip").enable();
     });
+
+    var layout3D = get3dLayout();
+    var plotData3D = [];
+    curPlottingNames = []; // fixme
+    _.each(curPlottingNodes, function(node, name) {
+        curPlottingNames.push(name);
+        plotData3D.push(get3DPlotData(node));
+        plotData3D.push(get3DPlotDataMesh(node));
+    });
+
+    Plotly.newPlot(the3DPlot, plotData3D, layout3D);
+
 }
 
 function clearPlot() {
@@ -2142,8 +2396,29 @@ function initPlot() {
     addPlotSelect($("#select-yaxis"), "loudness");
     addPlotSelect($("#select-size"), "popularity");
 
+    addPlotSelect($("#select-3d-xaxis"), "energy");
+    addPlotSelect($("#select-3d-yaxis"), "loudness");
+    addPlotSelect($("#select-3d-zaxis"), "acousticness");
+    addPlotSelect($("#select-3d-size"), "popularity");
+
     $("#plot-clear").on("click", function() {
         clearPlot();
+    });
+    $("#3d-plot-clear").on("click", function() {
+        clearPlot();
+        console.log("clicked clear in 3d plot");
+        $.ajax({
+           type: "POST",
+           url: "iris.py",
+           success: function (msg) {
+               // alert("Data Saved: " + msg);
+               console.log("in the POST from ajax");
+           },
+           error: function(msg) {
+                console.log("sorry, it didn't work");
+           }
+        });
+
     });
 
     window.onresize = function() {
@@ -2179,6 +2454,7 @@ $(document).ready(
             });
         } else if ('access_token' in args) {
             thePlot = $("#the-plot").get(0);
+            the3DPlot = $("#the-3d-plot").get(0);
             $(".work").show();
             $("#intro").hide();
             accessToken = args['access_token'];
