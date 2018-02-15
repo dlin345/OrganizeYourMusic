@@ -23,11 +23,6 @@
 
     <!-- Insert html into div -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script>
-            $(document).ready(function(){
-               $('#smallDiv').load("temp-div.html");
-            });
-        </script>
 
 </head>
   <body >
@@ -338,41 +333,23 @@
                    <div class="tab-pane" id="the-test-plots">
                         <div class="row" id="plot-controls">
                             <div class="col-xs-3">
-                                <span for="select-size"> X axis: </span> <br>
-                                <select id='select-3d-xaxis' class="axis-select nform-control nselectpicker"> </select>
+                                <span for="select-size"> Clustering Algorithm: </span> <br>
+                                <select id='select-cluster' class="axis-select nform-control nselectpicker"> </select>
                             </div>
 
-                            <div class="col-xs-3">
-                                <span for="select-size"> Y axis:</span> <br>
-                                <select id='select-3d-yaxis' class="axis-select nform-control nselectpicker"> </select>
-                            </div>
-
-                            <div class="col-xs-3">
-                                <span for="select-size"> Z axis:</span> <br>
-                                <select id='select-3d-zaxis' class="axis-select nform-control nselectpicker"> </select>
-                            </div>
-
-                            <div class="col-xs-2">
-                                <span for="select-size"> Size: </span> <br>
-                                <select id='select-3d-size' class="axis-select nform-control nselectpicker"> </select>
-                            </div>
                             <div id='plot-buttons' class="col-xs-1">
                                 <!--
                                 <a id="plot-select" title="add selected tracks to staging" 
                                 class="nbtn btn-success">
                                 <span class="glyphicon glyphicon-ok"></span></a>
                                 -->
-                                <a id="3d-plot-clear" title="clear all tracks from the plot"
+                                <a id="3d-plot-clear" title="Clear all tracks from the plot"
                                 class="nbtn btn-danger"><span
                                 class="glyphicon glyphicon-trash"></span></a>
                             </div>
                         </div>
-
-                        <div id="smallDiv"> </div>
-                        <!-- Simple graph -->
-                        <!-- <div id="c33edc9b-0b25-40c2-b202-eb25c01f51b6" style="height: 100%; width: 100%;" class="plotly-graph-div"></div><script type="text/javascript">window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("c33edc9b-0b25-40c2-b202-eb25c01f51b6", [{"y": [4, 3, 2, 1, 3], "x": [1, 2, 3, 4, 5], "type": "scatter"}], {"title": "hello world"}, {"linkText": "Export to plot.ly", "showLink": true})</script> -->
-
-
+                        <div id="the-test-plot"></div>
+                        
                     </div>
 
             </div>
@@ -381,6 +358,47 @@
           </div>
       </div>
     </div>
+
+    <!-- Run specified clustering algorithm with data from python script -->
+    <script type="text/javascript">
+        function runCluster() {
+
+            var toStringify;
+            _.each(curPlottingNodes, function(node, name) {
+                toStringify = get3DPlotData(node);
+            });
+            var layout = {
+                xaxis: {title: $("#select-3d-xaxis").val()},
+                yaxis: {title: $("#select-3d-yaxis").val()},
+                zaxis: {title: $("#select-3d-zaxis").val()}
+            }
+
+            var layoutInfo = JSON.stringify(layout);
+            var textToSave = JSON.stringify(toStringify);
+            var everything = {
+                data: toStringify,
+                plotLayout: layout,
+                pyscript: clusterTypes[$("#select-cluster").val()].script
+            }
+
+            var dataJson = JSON.stringify(everything);
+            
+            $.ajax({
+                type: "POST",
+                url: "/cluster",
+                contentType: "application/json; charset=utf-8",
+                data: dataJson,
+                success: function (msg) {
+                    console.log("in the POST from ajax");
+                    $('#the-test-plot').empty().append(msg);
+                },
+                error: function(msg) {
+                    console.log("sorry, it didn't work");
+                }
+            });
+        }
+    </script>
+    <!-- End post to python script -->
 
     <div style="clear:both"> </div>
     <div id="footer">
@@ -420,6 +438,7 @@ var genreIndex = 0;
 var sourceIndex = 6;
 var thePlot = null;
 var the3DPlot = null;
+var theTestPlot = null;
 
 var skipGenrePhrases = ['christmas'];
 var audio = $("<audio>");
@@ -916,7 +935,8 @@ function plotPlaylist(node) {
         curPlottingNames.push(node.name);
         Plotly.plot(thePlot, [getPlotData(node)], getLayout());
         Plotly.plot(the3DPlot, [get3DPlotData(node)], get3dLayout());
-        Plotly.plot(the3DPlot, [get3DPlotDataMesh(node)], get3dLayout());
+        Plotly.plot(theTestPlot, [get3DPlotData(node)], get3dLayout());
+        // Plotly.plot(the3DPlot, [get3DPlotDataMesh(node)], get3dLayout());
     }
 }
 
@@ -1055,10 +1075,11 @@ function redrawPlot() {
     _.each(curPlottingNodes, function(node, name) {
         curPlottingNames.push(name);
         plotData3D.push(get3DPlotData(node));
-        plotData3D.push(get3DPlotDataMesh(node));
+        // plotData3D.push(get3DPlotDataMesh(node));
     });
 
     Plotly.newPlot(the3DPlot, plotData3D, layout3D);
+    Plotly.newPlot(theTestPlot, plotData3D, layout3D);
 
 }
 
@@ -1430,6 +1451,21 @@ function updateViewOfTheWorld(quick) {
 
 }
 
+var clusterTypes = {
+    kmeans: {
+        name: "K-means Clustering",
+        script: "kmeans.py"
+    },
+    dbscan: {
+        name: "DBSCAN Clustering",
+        script: "dbscan.py"
+    },
+    affprop: {
+        name: "Affinity Propagation Clustering",
+        script: "affprop.py"
+    }
+}
+
 var plottableData = {
     energy: {
         name: "energy",
@@ -1502,6 +1538,24 @@ var plottableData = {
         getter:featGetter('year')
     },
 };
+
+function addClusterSelect(elem, defaultValue) {
+    elem.empty();
+    var keys = Object.keys(clusterTypes);
+    keys.sort();
+    _.each(keys, function(key) {
+        var param = clusterTypes[key];
+        var option = $("<option>");
+        option.text(param.name);
+        option.attr('value', key);
+        elem.append(option);
+    });
+    // default disabled value
+    elem.append($("<option disabled selected value style=\"display:none\"> </option>"));
+
+    elem.on('change', runCluster);
+}
+
 
 function addPlotSelect(elem, defaultValue) {
     elem.empty();
@@ -2401,24 +2455,13 @@ function initPlot() {
     addPlotSelect($("#select-3d-zaxis"), "acousticness");
     addPlotSelect($("#select-3d-size"), "popularity");
 
+    addClusterSelect($("#select-cluster"), "kmeans");
+
     $("#plot-clear").on("click", function() {
         clearPlot();
     });
     $("#3d-plot-clear").on("click", function() {
         clearPlot();
-        console.log("clicked clear in 3d plot");
-        $.ajax({
-           type: "POST",
-           url: "iris.py",
-           success: function (msg) {
-               // alert("Data Saved: " + msg);
-               console.log("in the POST from ajax");
-           },
-           error: function(msg) {
-                console.log("sorry, it didn't work");
-           }
-        });
-
     });
 
     window.onresize = function() {
@@ -2455,6 +2498,7 @@ $(document).ready(
         } else if ('access_token' in args) {
             thePlot = $("#the-plot").get(0);
             the3DPlot = $("#the-3d-plot").get(0);
+            theTestPlot = $("#the-test-plot").get(0);
             $(".work").show();
             $("#intro").hide();
             accessToken = args['access_token'];
