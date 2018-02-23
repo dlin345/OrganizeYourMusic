@@ -3,7 +3,6 @@ from sklearn import metrics
 
 import plotly
 import plotly.graph_objs as go
-import matplotlib.pyplot as plt
 
 import numpy as np
 import json
@@ -76,7 +75,7 @@ def runAffProp():
   camera = dict(
     up=dict(x=0, y=0, z=1),
     center=dict(x=0, y=0, z=0),
-    eye=dict(x=0.1, y=1.8, z=0.1)
+    eye=dict(x=0.1, y=2.1, z=0.1)
   )
 
   layout = go.Layout( scene = dict(xaxis = dict(title = axis['xaxis']['title']),

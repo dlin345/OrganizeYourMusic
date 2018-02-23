@@ -31,8 +31,12 @@ def runKMeans():
   X = np.asarray(X)
   Z = np.asarray(Z)
 
-  # use affine propagation to determine number of clusters to use
-  n_clusters = getClusterNum(datastore)
+  if (everything['clusterNum'] < 1):
+    # default use affine propagation to determine number of clusters to use
+    n_clusters = getClusterNum(X)
+  else:
+    n_clusters = everything['clusterNum']
+
 
   kmeans = cluster.KMeans(n_clusters=n_clusters).fit(pd.DataFrame({
     'x': datastore['x'], 
@@ -61,7 +65,7 @@ def runKMeans():
 
   camera = dict(up=dict(x=0, y=0, z=1),
                 center=dict(x=0, y=0, z=0),
-                eye=dict(x=0.1, y=1.8, z=0.1)
+                eye=dict(x=0.1, y=2.1, z=0.1)
   )
 
   myChart = plotly.offline.plot({
@@ -88,20 +92,7 @@ def runKMeans():
   return divOutput
 
 
-def getClusterNum(datastore):
-  X = []
-  Z = []
-  xVal = datastore['x']
-  yVal = datastore['y']
-  zVal = datastore['z']
-  track = datastore['text']
-
-  for index, item in enumerate(xVal):
-    X.append([xVal[index],yVal[index],zVal[index]])
-    Z.append(track[index])
-
-  X = np.asarray(X)
-  Z = np.asarray(Z)
+def getClusterNum(X):
 
   af = AffinityPropagation().fit(X)
   cluster_centers_indices = af.cluster_centers_indices_

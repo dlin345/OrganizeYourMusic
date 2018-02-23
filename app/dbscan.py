@@ -12,13 +12,20 @@ from sklearn.preprocessing import StandardScaler
 
 def runDbscan():
 
-  epsilon = 8.0
-  min_samples = 6
-
   lines = sys.stdin.readlines()
   everything = json.loads(lines[0])
   datastore = everything['data']
   axis = everything['plotLayout']
+
+  if (everything['epsilon'] < 1):
+    epsilon = 10.0 # default value
+  else:
+    epsilon = everything['epsilon']
+
+  if (everything['minPts'] < 1):
+    min_samples = 5 # default value
+  else:
+    min_samples = everything['minPts']
 
   X = []
   Z = []
@@ -81,15 +88,20 @@ def runDbscan():
   camera = dict(
     up=dict(x=0, y=0, z=1),
     center=dict(x=0, y=0, z=0),
-    eye=dict(x=0.1, y=1.8, z=0.1)
+    eye=dict(x=0.1, y=2.1, z=0.1)
   )
 
-  layout = go.Layout(showlegend = True,
-                     scene = dict(xaxis = dict(title = axis['xaxis']['title']),
+  layout = go.Layout( scene = dict(xaxis = dict(title = axis['xaxis']['title']),
                                   yaxis = dict(title = axis['yaxis']['title']),
                                   zaxis = dict(title = axis['zaxis']['title']),
-                                  camera = camera),
-                     )
+                                  camera = camera,
+                              ),
+                      showlegend = True,
+                      autosize = True,
+                      width = 1000, # fix me: fixed window size
+                      height = 400, # fix me: fixed window size
+                      hovermode = 'closest',
+                    )
 
   myChart = plotly.offline.plot({
       'data': data,

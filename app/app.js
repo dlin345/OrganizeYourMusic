@@ -28,6 +28,24 @@ app.post("/cluster", function(req, res){
   py.stdin.end();
 });
 
+app.post("/cluster-num", function(req, res){
+  var spawn = require('child_process').spawn;
+  var data = req.body;
+  var py = spawn('python', ['ap-cluster-num.py']);
+  var dataString = '';
+
+  py.stdout.on('data', function(data){
+    dataString += data;
+  });
+
+  py.stdout.on('end', function(){
+    res.send(dataString);
+  });
+
+  py.stdin.write(JSON.stringify(data));
+  py.stdin.end();
+});
+
 var server = app.listen(app.get('port'), () => {
   console.log('Listening on port ' + app.get('port'));
 });
