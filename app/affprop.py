@@ -88,6 +88,8 @@ def runAffProp():
                       width = 1000, # fix me: fixed window size
                       height = 400, # fix me: fixed window size
                       hovermode = 'closest',
+                      legend = dict(x=1,
+                                    y=0.6),
                     )
 
   myChart = plotly.offline.plot({
@@ -96,6 +98,7 @@ def runAffProp():
     },
     include_plotlyjs = False,
     output_type = 'div',
+    config = {'displayModeBar': True},
   )
 
   divOutput = myChart.replace("\"showlegend\": true", 

@@ -208,7 +208,6 @@
                     <li><a href="#staging" id='staging-tab'
                     data-toggle="tab">Staging Playlist (<span
                     class='nstaging-tracks'>0</span>)</a> </li>
-                    <li><a href="#the-test-plots" data-toggle="tab">The Test Plots</a> </li>
                 </ul>
 
 
@@ -250,36 +249,59 @@
                     </div>
 
                     <div class="tab-pane" id="the-3d-plots">
-                        <div class="row" id="plot-controls">
-                            <div class="col-xs-3">
-                                <span for="select-size"> X axis: </span> <br>
-                                <select id='select-3d-xaxis' class="axis-select nform-control nselectpicker"> </select>
-                            </div>
+                        <div class="row" id="plot-controls-3d">
+                            <!-- 3d axis controls start -->
+                            <div class="plot-controls" id="plot-controls-3d-inner1" style="display: block;">
+                                <div class="col-xs-3">
+                                    <span for="select-size"> X axis: </span> <br>
+                                    <select id='select-3d-xaxis' class="axis-select nform-control nselectpicker"> </select>
+                                </div>
 
-                            <div class="col-xs-3">
-                                <span for="select-size"> Y axis:</span> <br>
-                                <select id='select-3d-yaxis' class="axis-select nform-control nselectpicker"> </select>
-                            </div>
+                                <div class="col-xs-3">
+                                    <span for="select-size"> Y axis:</span> <br>
+                                    <select id='select-3d-yaxis' class="axis-select nform-control nselectpicker"> </select>
+                                </div>
 
-                            <div class="col-xs-3">
-                                <span for="select-size"> Z axis:</span> <br>
-                                <select id='select-3d-zaxis' class="axis-select nform-control nselectpicker"> </select>
+                                <div class="col-xs-2">
+                                    <span for="select-size"> Z axis:</span> <br>
+                                    <select id='select-3d-zaxis' class="axis-select nform-control nselectpicker"> </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <span for="select-size"></span> <br>
+                                    <a id="apply-clustering" title="Apply Clustering Algorithm" class="nbtn btn btn-default" 
+                                        onclick="toggleDiv('plot-controls-3d-inner')" style="float:right">Apply clustering algorithm</a>
+                                </div>
+                                <div id='plot-buttons' class="col-xs-1">
+                                    <!--
+                                    <a id="plot-select" title="add selected tracks to staging" 
+                                    class="nbtn btn-success">
+                                    <span class="glyphicon glyphicon-ok"></span></a>
+                                    -->
+                                    <a id="3d-plot-clear" title="Clear all tracks from the plot"
+                                    class="nbtn btn-danger"><span
+                                    class="glyphicon glyphicon-trash"></span></a>
+                                </div>
                             </div>
+                            <!-- 3d axis controls end -->
 
-                            <div class="col-xs-2">
-                                <span for="select-size"> Size: </span> <br>
-                                <select id='select-3d-size' class="axis-select nform-control nselectpicker"> </select>
+                            <!-- cluster controls start -->
+                            <div class="plot-controls" id="plot-controls-3d-inner2" style="display: none;">
+                                <div class="col-xs-3">
+                                    <span for="select-size"> Clustering Algorithm: </span> <br>
+                                    <select id='select-cluster' class="axis-select nform-control nselectpicker" onchange="runCluster()"></select>
+                                </div>
+                                <div id="column1" class="col-xs-3"></div>
+                                <div id="column2" class="col-xs-3"></div>
+                                <div id="column3" class="col-xs-2"></div>
+
+                                <div id='plot-buttons' class="col-xs-1">
+                                    <a id="3d-plot-clear" title="return to axes" class="nbtn btn-success" 
+                                    onclick="toggleDiv('plot-controls-3d-inner')">
+                                        <span class="glyphicon glyphicon-circle-arrow-left"></span>
+                                    </a>
+                                </div>
                             </div>
-                            <div id='plot-buttons' class="col-xs-1">
-                                <!--
-                                <a id="plot-select" title="add selected tracks to staging" 
-                                class="nbtn btn-success">
-                                <span class="glyphicon glyphicon-ok"></span></a>
-                                -->
-                                <a id="3d-plot-clear" title="clear all tracks from the plot"
-                                class="nbtn btn-danger"><span
-                                class="glyphicon glyphicon-trash"></span></a>
-                            </div>
+                            <!-- cluster controls end -->
                         </div>
                         <div id="the-3d-plot"></div>
                     </div>
@@ -324,37 +346,11 @@
                              data-title="Enter the staging playlist name">Your new playlist</a> 
                             <h4 id="save-button" class="pull-right"><a><span  
                             class="glyphicon glyphicon-save"></span>Save Playlist</a></h4>
-                          <div> </div>
-                          <table id="gthe-staging-table" class="table table-responsive"> </table>
-                          <div id="gthe-staging-table-truncated"> Showing the first 400 matching tracks. </div>
-                     </div>
-                   </div>
-
-                   <div class="tab-pane" id="the-test-plots">
-                        <div class="row" id="plot-controls">
-                            <div class="col-xs-3">
-                                <span for="select-size"> Clustering Algorithm: </span> <br>
-                                <select id='select-cluster' class="axis-select nform-control nselectpicker" onchange="runCluster()"></select>
-                            </div>
-                            <div id="column1" class="col-xs-3"></div>
-                            <div id="column2" class="col-xs-3"></div>
-                            <div id="column3" class="col-xs-2"></div>
-
-                            <div id='plot-buttons' class="col-xs-1">
-                                <!--
-                                <a id="plot-select" title="add selected tracks to staging" 
-                                class="nbtn btn-success">
-                                <span class="glyphicon glyphicon-ok"></span></a>
-                                -->
-                                <a id="3d-plot-clear" title="Clear all tracks from the plot"
-                                class="nbtn btn-danger"><span
-                                class="glyphicon glyphicon-trash"></span></a>
-                            </div>
-                        </div>
-                        <div id="the-test-plot"></div>
-                        
+                        <div></div>
+                        <table id="gthe-staging-table" class="table table-responsive"> </table>
+                        <div id="gthe-staging-table-truncated"> Showing the first 400 matching tracks. </div>
                     </div>
-
+                </div>
             </div>
 
               <br>
@@ -364,6 +360,21 @@
 
     <!-- Run specified clustering algorithm with data from python script -->
     <script type="text/javascript">
+        
+        // toggle between 3d axes and clustering algorithms
+        function toggleDiv(divid) {
+            varon = divid + '1';
+            varoff = divid + '2';
+
+            if(document.getElementById(varon).style.display == 'block') {
+                document.getElementById(varon).style.display = 'none';
+                document.getElementById(varoff).style.display = 'block';
+            } else {   
+                document.getElementById(varoff).style.display = 'none';
+                document.getElementById(varon).style.display = 'block'
+            }
+        }
+
         function runCluster() {
 
             var data3d;
@@ -444,7 +455,7 @@
                             'Please try tuning the parameters.');
                         return false;
                     } else {
-                        $('#the-test-plot').empty().append(msg);
+                        $('#the-3d-plot').empty().append(msg);
                     }
                 },
                 error: function(msg) {
@@ -480,7 +491,7 @@
                     if (msg === '') {
                         alert('Too many clusters! Please select a smaller number of clusters.');
                     } else {
-                        $('#the-test-plot').empty().append(msg);
+                        $('#the-3d-plot').empty().append(msg);
                     }
                 },
                 error: function(msg) {
@@ -520,7 +531,7 @@
                         alert("Sorry, we couldn't come up with good clusters. \n" +
                             "Please select new values for 'Minimum Number of Songs' and 'Epsilon'.");
                     } else {
-                        $('#the-test-plot').empty().append(msg);
+                        $('#the-3d-plot').empty().append(msg);
                     }
                 },
                 error: function(msg) {
@@ -578,7 +589,6 @@ var genreIndex = 0;
 var sourceIndex = 6;
 var thePlot = null;
 var the3DPlot = null;
-var theTestPlot = null;
 
 var skipGenrePhrases = ['christmas'];
 var audio = $("<audio>");
@@ -917,7 +927,6 @@ function playlistTitle(s) {
 }
 
 
-
 var curPlottingNodes = {}
 var curPlottingNames = [];
 
@@ -975,9 +984,6 @@ function get3DPlotData(node) {
             sizemin:2,
         },
         type: 'scatter3d',
-        // type: 'mesh3d',
-        // alphahull: 8,
-        // opacity: 0.4
     };
     
     var xGetter = plottableData[xDataName].getter;
@@ -1017,7 +1023,6 @@ function get3DPlotDataMesh(node) {
             sizeref:1,
             sizemin:2,
         },
-        // type: 'scatter3d',
         type: 'mesh3d',
         alphahull: 7,
         opacity: 0.4
@@ -1074,17 +1079,15 @@ function plotPlaylist(node) {
         curPlottingNodes[node.name] = node;
         curPlottingNames.push(node.name);
 
-        $('#the-test-plot').empty();
+        $('#the-3d-plot').empty();
         $('#select-cluster').empty();
         $('#column1').empty();
         $('#column2').empty();
         $('#column3').empty();
         addClusterSelect($("#select-cluster"), "kmeans");
         
-        Plotly.plot(thePlot, [getPlotData(node)], getLayout());
-        Plotly.plot(the3DPlot, [get3DPlotData(node)], get3dLayout());
-        Plotly.plot(theTestPlot, [get3DPlotData(node)], get3dLayout());
-        // Plotly.plot(the3DPlot, [get3DPlotDataMesh(node)], get3dLayout());
+        Plotly.plot(thePlot, [getPlotData(node)], getLayout(), {displayModeBar: true});
+        Plotly.plot(the3DPlot, [get3DPlotData(node)], get3dLayout(), {displayModeBar: true});
     }
 }
 
@@ -1181,6 +1184,23 @@ function get3dLayout() {
             showbackground: true,
             zerolinecolor: 'rgb(255, 255, 255)',
           },
+          camera: {
+            center: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            eye: {
+                x: 0.1,
+                y: 2.1,
+                z: 0.1
+            },
+            up: {
+                x: 0,
+                y: 0,
+                z: 1
+            }
+          },
         },
     };
     return layout;
@@ -1223,19 +1243,17 @@ function redrawPlot() {
     _.each(curPlottingNodes, function(node, name) {
         curPlottingNames.push(name);
         plotData3D.push(get3DPlotData(node));
-        // plotData3D.push(get3DPlotDataMesh(node));
     });
 
-    $('#the-test-plot').empty();
+    $('#the-3d-plot').empty();
     $('#select-cluster').empty();
     $('#column1').empty();
     $('#column2').empty();
     $('#column3').empty();
     addClusterSelect($("#select-cluster"), "kmeans");
 
-    Plotly.newPlot(the3DPlot, plotData3D, layout3D);
-    Plotly.newPlot(theTestPlot, plotData3D, layout3D);
-
+    Plotly.newPlot(the3DPlot, plotData3D, layout3D, 
+        {displayLogo:false, displayModeBar: true});
 }
 
 function clearPlot() {
@@ -2621,7 +2639,7 @@ function initPlot() {
         redrawPlot();
     };
 
-    clearPlot();
+    // clearPlot();
 }
 
 $(document).ready(
@@ -2651,7 +2669,6 @@ $(document).ready(
         } else if ('access_token' in args) {
             thePlot = $("#the-plot").get(0);
             the3DPlot = $("#the-3d-plot").get(0);
-            theTestPlot = $("#the-test-plot").get(0);
             $(".work").show();
             $("#intro").hide();
             accessToken = args['access_token'];
