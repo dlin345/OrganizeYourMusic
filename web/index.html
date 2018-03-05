@@ -292,8 +292,8 @@
                                     <span for="select-size"> Clustering Algorithm: </span> <br>
                                     <select id='select-cluster' class="axis-select nform-control nselectpicker" onchange="runCluster()"></select>
                                 </div>
-                                <div id="column1" class="col-xs-3"></div>
-                                <div id="column2" class="col-xs-3"></div>
+                                <div id="column1" class="col-xs-4"></div>
+                                <div id="column2" class="col-xs-2"></div>
                                 <div id="column3" class="col-xs-2"></div>
 
                                 <div id='plot-buttons' class="col-xs-1">
@@ -383,6 +383,9 @@
             _.each(curPlottingNodes, function(node, name) {
                 data3d = get3DPlotData(node);
             });
+
+            var numPts = data3d.x.length;
+
             var layout = getLayoutJson();
             var everything = {
                 data: data3d,
@@ -407,15 +410,16 @@
                     data: dataJson,
                     success: function (msg) {
                         var select = '';
-                        for (i=1;i<=10;i++){
+                        for (i=1;i<=30;i++){
                             select += '<option val=' + i;
-                            if (i == msg) {
+                            if (i == Math.round(numPts / msg)) {
                                 select += ' selected';
+                                everything['clusterNum'] = Math.round(numPts / $("#cluster-num").val());
                             }
                             select += '>' + i + '</option>';
                         }
                         $('#column1').append(
-                            '<div><span for="select-size"> Number of Clusters: </span> <br><select id="cluster-num" class="axis-select nform-control nselectpicker"></select></div>');
+                            '<div><span for="select-size"> Average number of songs per playlist: </span> <br><select id="cluster-num" class="axis-select nform-control nselectpicker"></select></div>');
                         $('#cluster-num').append(select);
                         submit = '<div><span for="select-size"></span><br><a id="kmeans-submit" title="Run K-means clustering" class="nbtn btn btn-default" onclick="runKmeans()">Submit</a></div>';
                         $('#column3').append(submit);
@@ -471,13 +475,14 @@
             _.each(curPlottingNodes, function(node, name) {
                 data3d = get3DPlotData(node);
             });
+            var numPts = data3d.x.length;
             var layout = getLayoutJson();
             var curVal = parseInt($("#cluster-num").val());
             var everything = {
                 data: data3d,
                 plotLayout: layout,
                 pyscript: clusterTypes[$("#select-cluster").val()].script,
-                clusterNum: curVal,
+                clusterNum: Math.round(numPts / curVal),
                 epsilon: 0,
                 minPts: 0
             }
