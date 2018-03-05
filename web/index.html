@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="styles2.css" rel="stylesheet" />
 
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Organize Your Music</title>
+    <title>Organize Your Music 2.0</title>
     <!-- Custom styles for this template -->
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="index.html">
             <span class="navbar-logo">Spotify</span>
-            <span class="navbar-title">Organize Your Music</span>
+            <span class="navbar-title">Organize Your Music 2.0</span>
           </a>
         </div>
        <div class="nav  navbar-nav navbar-right">
@@ -44,7 +44,7 @@
       <div id='intro'>
       <div id='main' class="top jumbotron jumbotron-hero container-fluid">
           <div  class="container" id="jumbo-dialog">
-            <h1 id='ttitle' >Organize Your Music</h1>
+            <h1 id='ttitle' >Organize Your Music 2.0</h1>
             <p id='ttext'>
                 Organize your Spotify music
                 by any of a wide range of musical attributes including
@@ -80,7 +80,7 @@
              <div class="col-md-offset-2 col-md-8">
                     <h2 class="text-center">Get your music collection in order</h2>
                     <p>
-                    With <b> Organize Your Music </b> you can easily organize
+                    With <b> Organize Your Music 2.0 </b> you can easily organize
                     your saved music. Just follow these steps:
                     </p>
                     <ol>
@@ -88,10 +88,10 @@
                         like to organize: Your Saved Music; Music you've added
                         to playlists; Music in playlists you follow; or all of
                         it.
-                        <li> <b> Click </b> on <i>Organize your Music</i>.
+                        <li> <b> Click </b> on <i>Organize your Music 2.0</i>.
                         If this is your first visit, you will be asked to ...
                         <li>  <b> Login </b> with your Spotify
-                        credentials. <b> Organize Your Music</b> will place all
+                        credentials. <b> Organize Your Music 2.0</b> will place all
                         of your tracks into a number of bins. There are Genres,
                         Moods, Decades, Popularity and more.
                         <li>  <b> Pick </b> one of the bins. You can view
@@ -104,13 +104,13 @@
                         the staging playlist you can 
                         <li>  <b> Save </b> the staging playlist to Spotify.
                     </ol>
-                    <p> Don't worry. <b> Organize Your Music </b> will never modify any of
+                    <p> Don't worry. <b> Organize Your Music 2.0 </b> will never modify any of
                     the songs in your saved music or playlists. It will only save
                     new playlists for you, and only when you explictly click on
                     the <b> save </b> button.
 
                     <h2> The  Track Properties </h2>
-                    Organize Your Music can help you slice and dice your music
+                    Organize Your Music 2.0 can help you slice and dice your music
                     collection by a wide range of properties:
 
                     <ol>
@@ -137,6 +137,8 @@
                         <li> <b> Length </b> - The duration of the song.
                         <li> <b> Acousticness </b> - The higher the value the more
                         acoustic the song is.
+                        <li> <b> Instrumentalness </b> - The higher the value the less
+                        vocal content the song has.
                         <li> <b> Speechiness </b> - The higher the value the more
                         spoken word the song contains.
                         <li> <b> Popularity </b> - The higher the value the more
@@ -144,7 +146,7 @@
                     </ol>
                     </p>
                     <h2> See it in Action</h2>
-                    Here's a demo of how I use Organize Your Music to make
+                    Here's a demo of how I use Organize Your Music 2.0 to make
                     a playlist of my most energtic gothic metal.
 
                     <p>
@@ -424,7 +426,7 @@
                 });
             } else if ($("#select-cluster").val() === 'dbscan') {
                 var select = '';
-                for (i=1;i<=15;i++){
+                for (i=1;i<=30;i++){
                     select += '<option val=' + i + '>' + i + '</option>';
                 }
                 $('#column1').append(
@@ -1655,11 +1657,11 @@ var plottableData = {
         min:0, max:1,
         getter:featGetterPercent('valence')
     },
-    duration: {
-        name: "duration",
-        min:0, max:1500,
-        getter:featGetter('duration')
-    },
+    // duration: {
+    //     name: "duration",
+    //     min:0, max:1500,
+    //     getter:featGetter('duration')
+    // },
     tempo: {
         name: "tempo",
         min:40, max:240,
@@ -1684,6 +1686,11 @@ var plottableData = {
         name: "acousticness",
         min:0, max:1,
         getter:featGetterPercent('acousticness')
+    },
+    instrumentalness: {
+        name: "instrumentalness",
+        min:0, max:1,
+        getter:featGetterPercent('instrumentalness')
     },
     liveness: {
         name: "live",
