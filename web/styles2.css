@@ -392,6 +392,7 @@ ease;
     //min-width: 130px;
     //text-transform: uppercase;
     white-space: normal;
+    cursor: pointer;
 }
 
 a#the-track-table_previous.paginate_button {

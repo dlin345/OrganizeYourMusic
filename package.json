@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
+    "intro.js": "^2.8.0-alpha.1",
     "reload": "^2.2.2"
   }
 }
