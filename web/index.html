@@ -32,21 +32,27 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="intro.js"></script>
     <script type="text/javascript">
+        function showTrackListSteps() {
+            introJs().setOption('showStepNumbers',false).start();
+        }
         function show2DSteps() {
-            introJs().goToStep(4).start();
+            introJs().goToStep(4).setOption('showStepNumbers',false).start();
         }
 
         function show3DSteps() {
-            introJs().goToStep(5).start();
+            introJs().goToStep(5).setOption('showStepNumbers',false).start();
         }
 
         function showStagingSteps() {
-            introJs().goToStep(8).start();
+            introJs().goToStep(8).setOption('showStepNumbers',false).start();
         }
 
         function getActiveTabTips() {
             var activeTab = $('.nav-tabs .active').text().trim();
-            if (activeTab === 'THE 2D PLOTS') {
+            
+            if (activeTab === 'THE TRACK LIST') {
+                showTrackListSteps();
+            } else if (activeTab === 'THE 2D PLOTS') {
                 show2DSteps();
             } else if (activeTab === 'THE 3D PLOTS') {
                 show3DSteps();
@@ -57,8 +63,7 @@
     </script>
     <!-- end introJs tips -->
 
-    <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation"
-    data-step="1" data-intro="Welcome to Organize Your Music 2.0! Come take a quick tour with us!" data-position="auto">
+    <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation"  data-step="1" data-intro="Welcome to Organize Your Music 2.0! Come take a tour with us!" data-position="auto">
       <div class="container">
         <div class="navbar-header">
           <a class="navbar-brand" href="index.html">
@@ -253,7 +258,8 @@
                 <div class="tab-content clearfix">
                   <div class="tab-pane active" id="the-track-list">
                     <h4 id="playlist-title" class="ntext-center"></h4>
-                      <table id="gthe-track-table" class="table ntable-striped table-responsive"> </table>
+                      <table id="gthe-track-table" class="table ntable-striped table-responsive"
+                      data-step="10" data-intro="Select which songs to stage in the playlist." data-position="left"> </table>
                       <div id="gthe-track-table-truncated"> Showing the first 400 matching tracks. </div>
                    </div>
 
@@ -309,7 +315,7 @@
                                     <span for="select-size"></span> <br>
                                     <a id="apply-clustering" title="Apply Clustering Algorithm" class="nbtn btn btn-default"
                                         data-step="6" data-intro="Click here to cluster your songs into playlists." data-position="bottom"
-                                        onclick="toggleDiv('plot-controls-3d-inner')" style="float:right">Apply clustering algorithm</a>
+                                        onclick="toggleDiv('plot-controls-3d-inner'); runCluster();" style="float:right">Apply clustering algorithm</a>
                                 </div>
                                 <div id='plot-buttons' class="col-xs-1">
                                     <!--
@@ -1779,8 +1785,8 @@ function addClusterSelect(elem, defaultValue) {
         option.attr('value', key);
         elem.append(option);
     });
-    // default disabled value
-    elem.append($("<option disabled selected value style=\"display:none\">-- select an option --</option>"));
+
+    elem.val(defaultValue);
 }
 
 
@@ -2424,7 +2430,7 @@ function getSavedTracks() {
         $("#loaded").show();
         $("#loading").hide();
 
-        introJs().start();
+        introJs().setOption('showStepNumbers',false).start();
     });
 }
 
@@ -2484,7 +2490,7 @@ function getMusicFromPlaylists(allPlaylists) {
         $("#loaded").show();
         $("#loading").hide();
 
-        introJs().start();
+        introJs().setOption('showStepNumbers',false).start();
     });
 }
 
@@ -2560,7 +2566,7 @@ function getPlaylistFromURI(name, uri) {
         $("#loaded").show();
         $("#loading").hide();
 
-        introJs().start();
+        introJs().setOption('showStepNumbers',false).start();
     });
 }
 

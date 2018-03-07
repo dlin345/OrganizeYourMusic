@@ -35,7 +35,7 @@ def runAffProp():
 
   n_clusters_ = len(cluster_centers_indices)
 
-  colors = ['blue','green','red','cyan','magenta']
+  colors = ['blue','green','red','cyan','purple', 'orange', 'pink']
   data = []
   count = 0;
   for k, col, in zip(range(n_clusters_), colors):
@@ -69,6 +69,7 @@ def runAffProp():
                           legendgroup = name,
                           name = name,
                           showlegend=False,
+                          hoverinfo='none',
                           mode='lines', line=dict(color=col, width=2))
       data.append(trace3)
 
