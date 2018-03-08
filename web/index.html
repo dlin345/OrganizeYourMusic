@@ -24,6 +24,7 @@
 
     <!-- Insert html into div -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </head>
   <body >
@@ -59,6 +60,28 @@
             } else if (activeTab.startsWith('STAGING PLAYLIST')) {
                 showStagingSteps();
             }
+        }
+
+        function showInfo() {
+            var clusterInfo = '';
+            var moreInfo = 'http://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html#';
+            if ($('#select-cluster').val() === 'kmeans') {
+                clusterInfo = 'The K-Means algorithm is one of the most well-known clustering algorithms.  It requires an input k of the number of clusters to produce and uses this to partition the dataset into k clusters.  The results of this algorithm tend to be globular in nature.<br><br>For this application, we take as input the average desired number of songs per playlist.  This average is then used to approximate the number of clusters k to use as the input to the algorithm.' + '<br>' +
+                '<br>Input Parameters:' + 
+                '<br> &mdash; Average number of songs per playlist';
+                document.getElementById('more-info-link').href = moreInfo + 'k-means';
+            } else if ($('#select-cluster').val() === 'dbscan') {
+                clusterInfo = 'The DBSCAN algorithm is well-suited for datasets in which clusters are not assumed to be globular, unlike K-Means and Affinity Propagation.  Additionally, it categorizes sparse data as background noise, which is omitted from the resultant clusters.  This algorithm takes two parameters as input: the minimum number number of samples and epsilon.<br><br>For this application, the minimum number of samples represents the minimum number of songs in each resultant playlist.' + '<br>' +
+                '<br>Input Parameters:' + 
+                '<br> &mdash; Minimum number of songs per playlist' +
+                '<br> &mdash; Epsilon - a distance parameter for the radius of each cluster.  Larger values of epsilon will encompass a greater region extending from a centroid.';
+                document.getElementById('more-info-link').href = moreInfo + 'dbscan';
+            } else if ($('#select-cluster').val() === 'affprop') {
+                clusterInfo = 'The Affinity Propagation algorithm is similar to K-Means in that each point is assigned to a cluster.  However, the centroids of each cluster are determined by votes from other nearby points rather than as a calculated average.  This method is advantageous over K-Means in that it does not require users to specify the number of clusters to produce.  The results of this algorithm tend to be globular in nature.<br><br>For this application, the algorithm does not take any input parameters.';
+                document.getElementById('more-info-link').href = moreInfo + 'affinity-propagation';
+            }
+            document.getElementById('modal-cluster-name').innerHTML = clusterTypes[$("#select-cluster").val()].name;
+            document.getElementById('modal-cluster-info').innerHTML = clusterInfo;
         }
     </script>
     <!-- end introJs tips -->
@@ -333,9 +356,32 @@
                             <!-- cluster controls start -->
                             <div class="plot-controls" id="plot-controls-3d-inner2" style="display: none;">
                                 <div class="col-xs-3">
-                                    <span for="select-size"> Clustering Algorithm: </span> <br>
+                                    <span for="select-size"> Clustering Algorithm: <a id="more-info" title="get details about this algorithm" class="nbtn btn-default pull-right">
+                                        <span class="glyphicon glyphicon-info-sign" data-toggle="modal" data-target="#infoModal" onclick="showInfo()"></span>
+                                    </a>
+                                    </span> <br>
                                     <select id='select-cluster' class="axis-select nform-control nselectpicker" onchange="runCluster()"></select>
                                 </div>
+                                <!-- start modal  -->
+                                <div class="modal fade" id="infoModal" role="dialog">
+                                    <div class="modal-dialog">
+                                      <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title" id="modal-cluster-name"></h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p id="modal-cluster-info"></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <span for="select-size"></span><a class="nbtn btn btn-default pull-left" data-dismiss="modal">Close</a>
+                                                <span for="select-size"></span><a id="more-info-link" class="pull-right" target="_blank" href="">More Info</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end modal -->
                                 <div id="column1" class="col-xs-3"></div>
                                 <div id="column2" class="col-xs-2"></div>
                                 <div id="column3" class="col-xs-2"></div>
