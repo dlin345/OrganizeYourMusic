@@ -1,5 +1,6 @@
 var express = require('express');
 var reload = require('reload');
+var os = require('os');
 var app = express();
 var bodyParser = require('body-parser');
 
@@ -13,8 +14,16 @@ app.use(express.static(__dirname + '/..' + '/web'));
 app.post("/cluster", function(req, res){
   var spawn = require('child_process').spawn;
   var data = req.body;
-  var py = spawn('python', [data.pyscript]);
   var dataString = '';
+  var osCmd = '';
+  
+  if (os.platform() === 'win32') {
+  	 osCmd = 'C:\\Python27\\python.exe';
+  } else if (os.platform() === 'darwin' || os.platform() === 'linux') {
+  	 osCmd = 'python';
+  }
+
+  var py = spawn(osCmd, [data.pyscript]); 
 
   py.stdout.on('data', function(data){
     dataString += data;
@@ -31,8 +40,16 @@ app.post("/cluster", function(req, res){
 app.post("/cluster-num", function(req, res){
   var spawn = require('child_process').spawn;
   var data = req.body;
-  var py = spawn('python', ['ap-cluster-num.py']);
   var dataString = '';
+  var osCmd = '';
+  
+  if (os.platform() === 'win32') {
+  	 osCmd = 'C:\\Python27\\python.exe';
+  } else if (os.platform() === 'darwin' || os.platform() === 'linux') {
+  	 osCmd = 'python';
+  }
+
+  var py = spawn(osCmd, ['ap-cluster-num.py']);   
 
   py.stdout.on('data', function(data){
     dataString += data;
